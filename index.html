@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <script src="index.js" defer></script>
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+    <meta name="description" content="A simple Pomodoro timer to help you manage your time effectively. Set a timer, focus on your tasks, and get notified when it's time to take a break.">
+    <meta name="keywords" content="Pomodoro, Timer, Productivity, Focus, Time Management, Breaks">
+    <meta name="author" content="Jesse Nehemiah">
+   <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#4CAF50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="application-name" content="Pomodoro Timer">
+    <meta name="msapplication-TileColor" content="#4CAF50">
+    <meta name="msapplication-TileImage" content="mstile-150x150.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon.jpeg">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon.jpeg">
+
+</head>
+<body>
+    <div class="timer-container">
+        <div id="audioPermissionPrompt" class="audio-permission-prompt hidden">
+            <h3>🔊 Audio Permission Required</h3>
+            <p>To receive notifications when your timer completes, please allow audio permissions.</p>
+            <button class="permission-btn" onclick="initializeAudio()">Enable Sound Notifications</button>
+        </div>
+
+        <div class="timer-input-section">
+            <label for="minutesInput">Timer Duration (Minutes)</label>
+            <input 
+                type="number" 
+                id="minutesInput" 
+                class="minutes-input" 
+                placeholder="25" 
+                min="1" 
+                max="999"
+                aria-label="Timer duration in minutes"
+            >
+        </div>
+
+        <div class="timer-display" id="timerDisplay" aria-live="polite">
+            25:00
+        </div>
+
+        <div class="timer-controls">
+            <button 
+                class="control-btn" 
+                id="startPauseBtn" 
+                onclick="toggleTimer()"
+                aria-label="Start or pause timer"
+            >
+                Start
+            </button>
+        </div>
+
+        <div id="statusMessage" class="status-message hidden" aria-live="polite"></div>
+    </div>
+
+
+</body>
+</html>
