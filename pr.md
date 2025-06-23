@@ -19,10 +19,6 @@ I implemented a single-file HTML application using Web Audio API instead of trad
 - **Build Process**: N/A - Ready-to-use single HTML file
 
 ### Testing Evidence
-- **Test Screenshots:
-1. Decimal number 'assets/decimalentry.png'
-2. Large number 'assets/exceed.png'
-3. The above images include error messaging plus input validation
 
 - **Test Coverage**: 
   - Background audio functionality with tab switching
@@ -35,7 +31,7 @@ I implemented a single-file HTML application using Web Audio API instead of trad
 
 - **Critical Flows Tested**:
   - User enables audio permissions → Browser prompt appears → Permission granted/denied
-  - Set 1 minute timer → Switch to different tab → Audio notification plays at completion
+  - Set 1 minute timer → Switch to different tab → Audio notification plays at completion.Meets the criteria specified for (1-999)
   - Invalid input handling → Clear error messages displayed
   - Timer pause/resume functionality during active sessions
   - Accessibility flow using keyboard-only navigation
