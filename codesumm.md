@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pomodoro Timer</title>
+    <script src="index.js" defer></script>
     <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
     <meta name="description" content="A simple Pomodoro timer to help you manage your time effectively. Set a timer, focus on your tasks, and get notified when it's time to take a break.">
     <meta name="keywords" content="Pomodoro, Timer, Productivity, Focus, Time Management, Breaks">
@@ -373,20 +374,22 @@
         }
 
         function playNotificationSound() {
-    if (!(audioInitialized && audioBuffer && audioContext)) {
-        return; // Silently skip if audio isn't ready
-    }
+            if (!audioInitialized || !audioBuffer || !audioContext) {
+                console.warn('Audio not initialized, cannot play notification');
+                return;
+            }
 
-    try {
-        const source = audioContext.createBufferSource();
-        source.buffer = audioBuffer;
-        source.connect(audioContext.destination);
-        source.start();
-    } catch (error) {
-        console.error('Failed to play notification sound:', error);
-    }
-}
-
+            try {
+                const source = audioContext.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(audioContext.destination);
+                source.start();
+                
+                console.log('Notification sound played successfully');
+            } catch (error) {
+                console.error('Failed to play notification sound:', error);
+            }
+        }
 
         function handleMinutesInput() {
             if (!timerState.isRunning) {
@@ -490,11 +493,7 @@
             }, 3000);
 
             // Play notification sound
-            
-            if (audioInitialized) {
-                 playNotificationSound();
-            }
-
+            playNotificationSound();
             
             // Show browser notification if permission granted
             showBrowserNotification();
@@ -504,7 +503,7 @@
             updateDisplay();
 
             // Show completion message
-            showStatus('🎉 Timer completed! ', 'success');
+            showStatus('🎉 Timer completed! Starting a new session...', 'success');
 
             // Focus the window if possible (limited by browser security)
             if (window.focus) {
