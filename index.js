@@ -1,4 +1,4 @@
-// Pomodoro Timer Application
+ 
         // Timer state management
         let timerState = {
             isRunning: false,
@@ -69,6 +69,14 @@
 
         async function initializeAudio() {
             try {
+                // First, request notification permissions to trigger browser prompt
+                let notificationPermission = 'default';
+                
+                if ('Notification' in window) {
+                    notificationPermission = await Notification.requestPermission();
+                    console.log('Notification permission:', notificationPermission);
+                }
+
                 // Create audio context with user gesture
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 
@@ -79,16 +87,25 @@
                 // Generate a simple notification sound (beep)
                 await generateNotificationSound();
                 
+                // Test play the sound to ensure it works
+                playNotificationSound();
+                
                 audioInitialized = true;
                 audioPermissionGranted = true;
                 audioPermissionPrompt.classList.add('hidden');
                 
-                showStatus('✅ Audio notifications enabled successfully!', 'success');
+                if (notificationPermission === 'granted') {
+                    showStatus('✅ Audio and notification permissions enabled successfully!', 'success');
+                } else if (notificationPermission === 'denied') {
+                    showStatus('⚠️ Audio enabled, but notifications blocked. Sound will still play when timer ends.', 'warning');
+                } else {
+                    showStatus('✅ Audio notifications enabled successfully!', 'success');
+                }
                 
-                // Auto-hide success message after 3 seconds
+                // Auto-hide message after 4 seconds
                 setTimeout(() => {
                     hideStatus();
-                }, 3000);
+                }, 4000);
 
             } catch (error) {
                 console.error('Failed to initialize audio:', error);
@@ -240,6 +257,9 @@
 
             // Play notification sound
             playNotificationSound();
+            
+            // Show browser notification if permission granted
+            showBrowserNotification();
 
             // Reset timer to original configured time
             timerState.remainingSeconds = timerState.totalSeconds;
@@ -293,6 +313,34 @@
                 toggleTimer();
             }
         });
+
+        function showBrowserNotification() {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                try {
+                    const notification = new Notification('Pomodoro Timer Complete! 🍅', {
+                        body: 'Your focus session has ended. Time for a break!',
+                        icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KCTxjaXJjbGUgY3g9IjMyIiBjeT0iMzIiIHI9IjMwIiBmaWxsPSIjRkY2MzQ3Ii8+Cgk8Y2lyY2xlIGN4PSIyNCIgY3k9IjI0IiByPSIzIiBmaWxsPSIjRkZGRkZGIi8+Cgk8Y2lyY2xlIGN4PSI0MCIgY3k9IjI0IiByPSIzIiBmaWxsPSIjRkZGRkZGIi8+Cgk8cGF0aCBkPSJtMjAgNDJjMC02LjYyNzQgNS4zNzI2LTEyIDEyLTEyczEyIDUuMzcyNiAxMiAxMiIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K',
+                        badge: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KCTxjaXJjbGUgY3g9IjMyIiBjeT0iMzIiIHI9IjMwIiBmaWxsPSIjRkY2MzQ3Ii8+Cgk8Y2lyY2xlIGN4PSIyNCIgY3k9IjI0IiByPSIzIiBmaWxsPSIjRkZGRkZGIi8+Cgk8Y2lyY2xlIGN4PSI0MCIgY3k9IjI0IiByPSIzIiBmaWxsPSIjRkZGRkZGIi8+Cgk8cGF0aCBkPSJtMjAgNDJjMC02LjYyNzQgNS4zNzI2LTEyIDEyLTEyczEyIDUuMzcyNiAxMiAxMiIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K',
+                        tag: 'pomodoro-timer',
+                        requireInteraction: false
+                    });
+
+                    // Auto-close notification after 5 seconds
+                    setTimeout(() => {
+                        notification.close();
+                    }, 5000);
+
+                    // Handle notification click
+                    notification.onclick = function() {
+                        window.focus();
+                        notification.close();
+                    };
+
+                } catch (error) {
+                    console.error('Failed to show browser notification:', error);
+                }
+            }
+        }
 
         // Handle browser refresh/close
         window.addEventListener('beforeunload', (e) => {
